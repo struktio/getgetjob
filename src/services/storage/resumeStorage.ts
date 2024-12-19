@@ -19,7 +19,7 @@ export async function uploadResumeFile(file: File, userId: string): Promise<stri
     return publicUrl;
   } catch (error) {
     throw new Error(
-      error instanceof Error 
+      error instanceof Error
         ? `Failed to upload file: ${error.message}`
         : 'Failed to upload file'
     );
