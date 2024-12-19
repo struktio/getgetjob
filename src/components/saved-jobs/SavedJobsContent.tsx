@@ -1,12 +1,17 @@
-import React from 'react';
-import { SavedJobsHeader } from './SavedJobsHeader';
+import { DashboardHeader } from '../dashboard/DashboardHeader';
 import { SavedJobsComingSoon } from './SavedJobsComingSoon';
+import { Star } from 'lucide-react';
 
 export function SavedJobsContent() {
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <SavedJobsHeader />
-      <SavedJobsComingSoon />
-    </div>
-  );
+	return (
+
+		<div className="min-h-screen bg-gray-50">
+			<DashboardHeader
+				title="Saved Jobs"
+				description="Discover and save the perfect opportunities for your next career move"
+				icon={<Star className="h-6 w-6 text-white" />}
+			/>
+			<SavedJobsComingSoon />
+		</div>
+	);
 }
