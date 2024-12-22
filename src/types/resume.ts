@@ -5,5 +5,6 @@ export interface Resume {
   description: string;
   createdAt: string;
   status: 'completed' | 'processing' | 'failed';
-  downloadUrl?: string;
+  downloadUrl: string | null;
+	originalUrl: string | null;
 }

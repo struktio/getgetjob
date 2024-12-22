@@ -1,43 +1,47 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+
 const corsHeaders = {
 	'Access-Control-Allow-Origin': '*',
 	'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-async function handleWebhookRequest(supabaseClient: any, resumeId: string, webhookUrl: string) {
+interface OptimizedResumeResponse{
+	resume_id: string;	
+	optimized_resume_url: string;
+	job_title: string;
+	company: string;
+}
+
+async function handleWebhookRequest(supabaseClient: any, res: OptimizedResumeResponse) {
 	// Get resume data
 	const { data: resume, error: fetchError } = await supabaseClient
 		.from('resumes')
 		.select('*')
-		.eq('id', resumeId)
+		.eq('id', res.resume_id)
 		.single();
 
-	if (fetchError) throw fetchError;
-
-	// Send to Make.com
-	const response = await fetch(webhookUrl, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			resume_id: resume.id,
-			original_resume_url: resume.original_resume_url,
-			job_url: resume.job_url,
-		}),
-	});
-
-	if (!response.ok) {
+	if (fetchError) {
 		// Update resume status to failed
 		await supabaseClient
 			.from('resumes')
 			.update({ status: 'failed' })
-			.eq('id', resumeId);
-
-		throw new Error('Failed to process resume');
+		.eq('id', res.resume_id);
 	}
+		// Update resume status to failed
+		await supabaseClient
+			.from('resumes')
+			.update({ 
+				status: 'completed',
+				optimized_resume_url: res.optimized_resume_url,
+				job_title: res.job_title,
+				company: res.company,
+				})
+		.eq('id', res.resume_id);
 
-	return { message: 'Successfully triggered webhook' };
+	return { message: 'Successfully updated resume status' };
 }
 
 serve(async (req) => {
@@ -45,19 +49,24 @@ serve(async (req) => {
 		return new Response('ok', { headers: corsHeaders });
 	}
 
+	console.log('Request Received');
+
 	try {
 		const supabaseClient = createClient(
 			Deno.env.get('SUPABASE_URL') ?? '',
 			Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 		);
 
-		const { resume_id, webhook_url } = await req.json();
+		const res: OptimizedResumeResponse = await req.json();
 
-		if (!resume_id || !webhook_url) {
+		console.log('Response', {res});
+
+		if (!res.resume_id || !res.optimized_resume_url || !res.job_title || !res.company) {
 			throw new Error('Missing required parameters');
 		}
 
-		const result = await handleWebhookRequest(supabaseClient, resume_id, webhook_url);
+
+		const result = await handleWebhookRequest(supabaseClient, res);
 
 		return new Response(JSON.stringify(result), {
 			headers: { ...corsHeaders, 'Content-Type': 'application/json' },

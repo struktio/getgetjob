@@ -11,9 +11,9 @@ export function DashboardNavbar() {
 				<div className="flex justify-between h-16">
 					<Logo />
 					<div className="flex items-center space-x-4">
-						<button className="p-2 text-gray-400 hover:text-gray-500">
+						{/* <button className="p-2 text-gray-400 hover:text-gray-500">
 							<Settings className="h-5 w-5" />
-						</button>
+						</button> */}
 						<div className="flex items-center space-x-3">
 							<img
 								className="h-8 w-8 rounded-full"

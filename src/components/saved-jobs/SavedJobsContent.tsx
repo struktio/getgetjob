@@ -11,7 +11,11 @@ export function SavedJobsContent() {
 				description="Discover and save the perfect opportunities for your next career move"
 				icon={<Star className="h-6 w-6 text-white" />}
 			/>
-			<SavedJobsComingSoon />
+
+			<main className="flex-1 ">
+
+				<SavedJobsComingSoon />
+			</main>
 		</div>
 	);
 }

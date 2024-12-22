@@ -7,8 +7,8 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ title, description, icon }: DashboardHeaderProps) {
 	return (
 		<div className="bg-white shadow">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-				<div className="flex items-center">
+			<div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+				<div className="flex items-start">
 					<div className="h-12 w-12 bg-brand-gradient rounded-lg flex items-center justify-center mr-6">
 						{icon}
 					</div>

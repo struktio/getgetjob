@@ -11,6 +11,7 @@ function mapResumeRecord(record: ResumeRecord): Resume {
     description: `Resume optimized for ${record.job_url}`,
     createdAt: record.created_at,
     status: record.status,
+		originalUrl: record.job_url,
     downloadUrl: record.optimized_resume_url
   };
 }
