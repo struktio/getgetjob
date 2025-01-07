@@ -1,5 +1,5 @@
 import { Logo } from '../../assets/logo';
-import { Settings, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export function DashboardNavbar() {
